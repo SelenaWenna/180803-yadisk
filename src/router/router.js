@@ -9,27 +9,19 @@ const pathToRegexp = require('path-to-regexp');
 
 Vue.use(Router);
 
-//var keys = [{pattern: '/^\/?\/([^\/]+?)\/?$/i'}];
-//var re = pathToRegexp('/:diskPath?', keys);
-//console.log(re)
-//re = /^\/:diskPath?\/([^\/]+?)\/?$/i;
-// keys = [{ name: 'bar', prefix: '/', delimiter: '/', optional: false, repeat: false, pattern: '[^\\/]+?' }]
-
 export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/*',
+      path: '/',
       name: 'home',
-      component: List,
-/*      children: [
-        {
-          path: ':diskPath',
-          name: 'list',
-          component: List,
-        },
-      ],
-*/    },
+      redirect: '/disk/',
+    },
+    {
+      path: '/disk/*',
+      name: 'disk',
+      component: List
+    },
     {
       path: '/settings',
       name: 'settings',

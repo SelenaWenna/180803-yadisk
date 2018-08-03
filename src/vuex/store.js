@@ -7,7 +7,7 @@ import axios from 'axios';
 Vue.use(Vuex);
 
 const url = {
-	base: 'https://cloud-api.yandex.net:443',
+	base: 'https://cloud-api.yandex.net',
 	disk: '/v1/disk',
 	files: '/v1/disk/resources',
 };
@@ -31,8 +31,6 @@ export default new Vuex.Store({
 	},
 	actions: {
 		changePath(context, payload) {
-			//payload.path = payload.path.slice(6, payload.path.length);
-			//console.log(payload.path, typeof payload.path, "/"+payload.path)
 			axios.get(url.base+url.files, {
 				params: {
 					path: payload,
@@ -44,10 +42,8 @@ export default new Vuex.Store({
 				}
 			})
 			.then( response => {
-				//this.$router.push({ name: 'home', params: { diskPath: this.getters.getPath }});
 				context.commit('changePath', payload);
 				context.commit('changeList', response.data._embedded.items);
-				//this.list = response.data._embedded.items;
 			})
 			.catch( error => {
 				console.error(error);
@@ -68,13 +64,8 @@ export default new Vuex.Store({
 					}
 				})
 				.then( response => {
-					// handle success
-					//console.log(this.$store.getters.getPath, response.data);
-					//this.$router.push({ name: 'home', params: { diskPath: this.getters.getPath }});
 					localStorage.setItem('token', payload);
 					context.commit('changeToken', payload);
-					// По идее надо сделать редирект на главную
-					//this.list = response.data._embedded.items;
 				})
 				.catch( error => {
 					// Если авторизация не проходит, то считаем токен ошибочным, очищаем localStorage и state и выводим сообщение об ошибке в консоль

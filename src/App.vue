@@ -6,16 +6,9 @@
         b-collapse.justify-content-end(is-nav id="nav_collapse")
           b-navbar-nav
             li.nav-item
-              router-link.nav-link(:to="{name: 'home', params: {diskPath: ''}}") Главная
+              router-link.nav-link(to="/") Главная
             li.nav-item
-              router-link.nav-link(:to="{name: 'settings', params: {diskPath: ''}}") Настройки
-            //-b-nav-item-dropdown(id="nav7_ddown" text="Системные папки" extra-toggle-classes="nav-link-custom" left)
-              b-dropdown-item(href="#") Файлы
-              b-dropdown-item(href="#") Фото
-              b-dropdown-item(href="#") Общий доступ
-              b-dropdown-item(href="#") История
-              b-dropdown-item(href="#") Архив
-              b-dropdown-item(href="#") Корзина
+              router-link.nav-link(to="/settings") Настройки
       b-row
         b-col(cols="12")
           router-view.content

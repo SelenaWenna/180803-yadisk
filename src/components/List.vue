@@ -2,16 +2,16 @@
 	div
 		token(v-if="!token")
 		div(v-if="token")
-			b-breadcrumb(:items="breadcrumbs" v-if="breadcrumbs")
-			router-link.prev(:to="breadcrumbs[breadcrumbs.length-2].href" v-if="breadcrumbs[breadcrumbs.length-2] && path !== '/'")
-				icons.prev-icon(iconName="icon-arrow_left" width="20" height="20" iconColor="#999999")
-				span {{ breadcrumbs[breadcrumbs.length-2].text }}
+			b-breadcrumb(:items="breadcrumbs" v-if="breadcrumbs.length > 1")
+			h3.prev(v-if="breadcrumbs[breadcrumbs.length-1]")
+				router-link(:to="breadcrumbs[breadcrumbs.length-2].href" v-if="breadcrumbs[breadcrumbs.length-2]" target="_self")
+					icons.prev-icon(iconName="icon-arrow_left" width="20" height="20" iconColor="#999999")
+				span {{ breadcrumbs[breadcrumbs.length-1].text }}
 			b-list-group
 				b-list-group-item.item(v-for="item in current")
-					router-link.item-line(:to="convertPath(item.path)" target="_self"  v-if="item.type==='dir'" @click.prevent="")
+					router-link.item-line(:to="`/disk${convertPath(item.path)}`" target="_self"  v-if="item.type==='dir'" @click.prevent="")
 						icons.item-preview(iconName="icon-folder" width="50" height="50" iconColor="#ffd200")
 						span.item-about
-							//-.item-about_name {{ convertPath(item.path) }}
 							.item-about_name {{ item.name }}
 							.item-about_size(v-if="item.size") {{ convertBytes(item.size) }}
 					div.item-line(v-else)
@@ -43,18 +43,17 @@
 			}),
 			current() {
 				if (!this.path) {
-					this.changePath(this.$route.fullPath);
+					this.changePath("/"+this.$route.params[0]);
 				}
 
 				this.breadcrumbs = [];
-				const breadcrumbs = this.$route.fullPath === '/' ? [""] : this.$route.fullPath.split('/');
+				const breadcrumbsList = this.$route.params[0] ? ["/disk", ...this.$route.params[0].split('/')] : ["/disk"];
 
-				for (var i = 0; i < breadcrumbs.length; i++) {
+				for (var i = 0; i < breadcrumbsList.length; i++) {
 					this.breadcrumbs.push({
-						text: i == 0 ? "Файлы" : breadcrumbs[i],
-						href: i == 0 ? "/" : this.$route.fullPath.split('/', i+1).join('/')
+						text: i === 0 ? "Файлы" : breadcrumbsList[i],
+						href: i === 0 ? "/disk/" : breadcrumbsList.join('/').split('/', i+2).join('/')
 					});
-				
 				}
 
 				return this.getList;
@@ -80,7 +79,7 @@
 			}
 		},
 		beforeRouteUpdate (to, from, next) {
-			this.changePath(to.path);
+			this.changePath("/"+to.params[0]);
 			next();
 		}
 	}
@@ -131,26 +130,27 @@
 
 	.prev {
 		width: 100%;
+		padding-left: 20px;
     display: inline-block;
     text-align: left;
     margin-bottom: 15px;
 		text-decoration: none;
-		color: #999;
+		color: #2c3e50;
 		transition: color 0.5s;
   }
 
-  .prev:hover {
+  .prev a:hover {
 		text-decoration: none;
 		color: #2c3e50;
   }
-
-	.prev:hover .prev-icon {
-		fill:  #2c3e50;
-	}
 
 	.prev-icon {
 		margin-right: 15px;
 		margin-left: 15px;
 		transition: fill 0.5s;
+	}
+
+	.prev-icon:hover {
+		fill: #2c3e50;
 	}
 </style>
